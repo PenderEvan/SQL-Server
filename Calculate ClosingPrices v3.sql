@@ -75,7 +75,7 @@ JOIN PreviousClosingPrice AS pcp
 
 /* Calculate Total Return as Sum of monthly return. See morningstar formula above */
 UPDATE ClosingPrices
-SET TotalReturn = (SELECT EXP (SUM (LOG (MonthlyReturn+1)))-1 FROM ClosingPrices WHERE Code = t1.Code AND PerformanceDate <= t1.PerformanceDate)
+SET TotalReturn = (SELECT PRODUCT(MonthlyReturn+1)-1 FROM ClosingPrices WHERE Code = t1.Code AND PerformanceDate <= t1.PerformanceDate)
 FROM ClosingPrices AS t1
 
 UPDATE ClosingPrices
@@ -127,6 +127,6 @@ FROM ClosingPrices AS t1
 JOIN cda2yr AS cda2yr
 	ON EOMONTH(t1.PerformanceDate) = cda2yr.performance_date;
 
-SELECT code, FundName, PerformanceDate, GrowthOf10k
+SELECT code, FundName, PerformanceDate, TotalReturn
 FROM ClosingPrices
 ORDER BY PerformanceDate DESC, Code DESC;
